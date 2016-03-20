@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>VendingMachineTest.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">edu.towson.cis.cosc442.project2.vendingmachine (Mar 19, 2016 11:27:04 PM)</a> &gt; <a href="../../index.html" class="el_group">VendingMachine</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">edu.towson.cis.cosc442.project2.vendingmachine</a> &gt; <span class="el_source">VendingMachineTest.java</span></div><h1>VendingMachineTest.java</h1><pre class="source lang-java linenums">/**
+ * 
+ */
+package edu.towson.cis.cosc442.project2.vendingmachine;
+
+import static org.junit.Assert.*;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+/**
+ * @author Nourish Khan
+ *
+ */
+<span class="fc" id="L16">public class VendingMachineTest {</span>
+	
+	private VendingMachine vm;
+	
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+<span class="fc" id="L25">		vm = new VendingMachine();</span>
+<span class="fc" id="L26">		vm.addItem(new VendingMachineItem(&quot;Item A&quot;, 1.34), &quot;A&quot;);</span>
+<span class="fc" id="L27">		vm.addItem(new VendingMachineItem(&quot;Item C&quot;, 4.74), &quot;C&quot;);</span>
+<span class="fc" id="L28">	}</span>
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+<span class="fc" id="L35">		vm = null;</span>
+<span class="fc" id="L36">	}</span>
+	
+	/**
+	 * Test that an exception is thrown when attempting to add an item to an already occupied slot in the vending machine
+	 */
+	@Test (expected= VendingMachineException.class)
+	public void testAddItemToOccupiedSlot() {
+<span class="nc" id="L43">		vm.addItem(new VendingMachineItem(&quot;A thing&quot;, 3.4), &quot;A&quot;);</span>
+<span class="nc" id="L44">	}</span>
+	
+	/**
+	 * Test that an exception is thrown when attempting to add an item to a non-existent slot in the vending machine
+	 */
+	@Test (expected= VendingMachineException.class)
+	public void testAddItemToNonExistentSlot() {
+<span class="nc" id="L51">		vm.addItem(new VendingMachineItem(&quot;A thing&quot;, 3.4), &quot;F&quot;);</span>
+<span class="nc" id="L52">	}</span>
+	
+	/**
+	 * Test that an item is added successfully into a specified slot
+	 */
+	@Test
+	public void testAddItemSuccess() {
+<span class="fc" id="L59">		VendingMachineItem item = new VendingMachineItem(&quot;Another thing&quot;, 2.3);</span>
+<span class="fc" id="L60">		vm.addItem(item, &quot;B&quot;);</span>
+<span class="fc" id="L61">		assertEquals(item, vm.getItem(&quot;B&quot;));</span>
+<span class="fc" id="L62">	}</span>
+	
+	/**
+	 * Test that an exception is thrown when attempting to remove an item from a slot when there is no item to remove
+	 */
+	@Test (expected= VendingMachineException.class)
+	public void testRemoveItemFromEmptySlot() {
+<span class="nc" id="L69">		vm.removeItem(&quot;D&quot;);</span>
+<span class="nc" id="L70">	}</span>
+	
+	/**
+	 * Test that an exception is thrown when attempting to remove an item from a non-existent slot
+	 */
+	@Test (expected= VendingMachineException.class)
+	public void testRemoveItemFromNonExistentSlot() {
+<span class="nc" id="L77">		vm.removeItem(&quot;G&quot;);</span>
+<span class="nc" id="L78">	}</span>
+	
+	/**
+	 * Test that an item is successfully removed from a slot when the slot is not empty
+	 */
+	@Test
+	public void testRemoveItemSuccess(){
+<span class="fc" id="L85">		vm.removeItem(&quot;A&quot;);</span>
+<span class="fc" id="L86">		assertNull(vm.getItem(&quot;A&quot;));</span>
+<span class="fc" id="L87">	}</span>
+	
+	/**
+	 * Test that an exception is thrown when attempt to insert an amount that is 0 or negative
+	 */
+	@Test (expected = VendingMachineException.class)
+	public void testInsertMoneyInvalidAmount(){
+<span class="nc" id="L94">		vm.insertMoney(-4);</span>
+<span class="nc" id="L95">	}</span>
+	
+	/**
+	 * Test that money is successfully added to the vending machine when given a valid amount
+	 */
+	@Test
+	public void testInsertMoneySuccess(){
+<span class="fc" id="L102">		vm.insertMoney(5);</span>
+<span class="fc" id="L103">		assertEquals(5, vm.balance/*vm.getBalance()*/, 0.01);</span>
+		//wouldn't this also test getBalance() if I'd used it? Am I allowed to use the field balance in JUnit testing?
+<span class="fc" id="L105">	}</span>
+	
+	/**
+	 * Tests that the correct value is returned when getBalance is called
+	 */
+	@Test
+	public void testGetBalance(){
+<span class="fc" id="L112">		vm.insertMoney(4.56);</span>
+<span class="fc" id="L113">		assertEquals(4.56, vm.getBalance(), 0.001);</span>
+<span class="fc" id="L114">	}</span>
+	
+	/**
+	 * Tests that if balance &lt; the price of the item, false is returned by makePurchase()
+	 */
+	@Test
+	public void testMakePurchaseNotEnoughBalance(){
+<span class="fc" id="L121">		boolean purchase = vm.makePurchase(&quot;A&quot;);</span>
+<span class="fc" id="L122">		assertFalse(purchase);</span>
+<span class="fc" id="L123">	}</span>
+	
+	/**
+	 * Tests that if an invalid slot is entered, false is returned by makePurchase()
+	 */
+	@Test //(expected = VendingMachineException.class)
+	public void testMakePurchaseInvalidSlot(){
+<span class="fc" id="L130">		boolean purchase = vm.makePurchase(&quot;F&quot;);</span>
+<span class="fc" id="L131">		assertFalse(purchase);</span>
+<span class="fc" id="L132">	}</span>
+	
+	/**
+	 * Tests that a purchase is successfully made if the balance is &lt;= to the price of the item o be purchased
+	 */
+	@Test
+	public void testMakePurchaseSuccess(){
+<span class="fc" id="L139">		vm.insertMoney(1.45);</span>
+<span class="fc" id="L140">		boolean purchase = vm.makePurchase(&quot;A&quot;);</span>
+<span class="fc" id="L141">		assertTrue(purchase);</span>
+<span class="fc" id="L142">	}</span>
+	
+	@Test
+	public void testReturnChange(){
+<span class="fc" id="L146">		vm.insertMoney(1.25);</span>
+<span class="fc" id="L147">		vm.returnChange();</span>
+<span class="fc" id="L148">		assertEquals(0, vm.getBalance(), 0.001);</span>
+<span class="fc" id="L149">	}</span>
+	
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span>edu.towson.cis.cosc442.project2.vendingmachine (Mar 19, 2016 11:27:04 PM)</div></body></html>
